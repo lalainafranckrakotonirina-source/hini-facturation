@@ -2,7 +2,7 @@ import React from 'react';
 import { Invoice, CompanySettings } from '../types';
 import { OfficialDocument } from './OfficialDocument';
 import { Printer, X, Edit2, ArrowRightCircle, FileDown } from 'lucide-react';
-import { printInvoiceDocument, formatInvoiceFileName } from '../utils/formatters';
+import { formatInvoiceFileName } from '../utils/formatters';
 
 interface DocumentPreviewModalProps {
   invoice: Invoice;
@@ -19,12 +19,21 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
   onEdit,
   onConvert,
 }) => {
-  const handlePrint = () => {
-    printInvoiceDocument(invoice.number);
-  };
-
   const isProforma = invoice.type === 'PROFORMA';
   const pdfFileName = `${formatInvoiceFileName(invoice.number)}.pdf`;
+
+  const handlePrint = () => {
+    // Force dynamiquement le titre de la page pour que la boîte d'impression propose le bon nom de fichier PDF
+    const oldTitle = document.title;
+    document.title = formatInvoiceFileName(invoice.number);
+    
+    window.print();
+    
+    // Restaure le titre initial après l'impression
+    setTimeout(() => {
+      document.title = oldTitle;
+    }, 500);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-start overflow-y-auto p-2 sm:p-6 print:p-0 print:bg-white print:static">
