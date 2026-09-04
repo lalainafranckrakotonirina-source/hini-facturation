@@ -1005,3 +1005,91 @@ export const CompanySettingsView: React.FC = () => {
     </div>
   );
 };
+import React, { useState } from 'react';
+import { CompanySettings } from '../types';
+import { Upload, CheckCircle2, ShieldCheck, X } from 'lucide-react';
+
+interface CompanySettingsModalProps {
+  settings: CompanySettings;
+  onClose: () => void;
+  onSave: (newSettings: CompanySettings) => void;
+}
+
+export const CompanySettingsModal: React.FC<CompanySettingsModalProps> = ({
+  settings,
+  onClose,
+  onSave,
+}) => {
+  const [stampSignature, setStampSignature] = useState(settings.stampSignature || '');
+  const [successMsg, setSuccessMsg] = useState(false);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setStampSignature(base64String);
+        
+        // Mise à jour globale et synchronisation instantanée
+        const updated = { ...settings, stampSignature: base64String };
+        onSave(updated);
+        localStorage.setItem('hini_company_settings', JSON.stringify(updated));
+        
+        setSuccessMsg(true);
+        setTimeout(() => setSuccessMsg(false), 3000);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-slate-100 max-w-xl w-full shadow-2xl relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="w-6 h-6 text-blue-400" />
+          <h2 className="text-lg font-bold">Paramètres Administrateur - Cachet & Signature</h2>
+        </div>
+        
+        <p className="text-sm text-slate-400 mb-6">
+          Uploadez l'image officielle combinant le cachet de l'entreprise et la signature de la gérante ("Le Prestataire"). Elle s'affichera dynamiquement sur tous les documents.
+        </p>
+
+        <div className="space-y-4">
+          <label className="block border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-950/50">
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              className="hidden"
+            />
+            <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+            <span className="text-sm font-semibold text-slate-200">Cliquez pour uploader le cachet et la signature</span>
+            <p className="text-xs text-slate-500 mt-1">PNG, JPG ou WEBP (fond transparent recommandé)</p>
+          </label>
+
+          {successMsg && (
+            <div className="flex items-center gap-2 text-emerald-400 text-sm bg-emerald-950/40 p-3 rounded-lg border border-emerald-800/50">
+              <CheckCircle2 className="w-4 h-4" />
+              Cachet et signature mis à jour et synchronisés avec succès !
+            </div>
+          )}
+
+          {stampSignature && (
+            <div className="mt-4 p-4 bg-white rounded-lg border border-slate-700 inline-block">
+              <p className="text-xs font-semibold text-slate-500 mb-2">Aperçu officiel actif :</p>
+              <img src={stampSignature} alt="Cachet et Signature Gérante" className="h-24 object-contain" />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
