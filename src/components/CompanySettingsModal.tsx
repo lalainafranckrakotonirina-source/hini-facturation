@@ -51,6 +51,9 @@ export const CompanySettingsView: React.FC = () => {
   const [fileInputKey, setFileInputKey] = useState(Date.now());
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
+  // Cachet & Signature state
+  const [stampSignature, setStampSignature] = useState(formData.stampSignature || '');
+
   // Logo upload state
   const [isDraggingLogo, setIsDraggingLogo] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +61,9 @@ export const CompanySettingsView: React.FC = () => {
   // Sync formData with settings when updated globally
   useEffect(() => {
     setFormData(settings);
+    if (settings.stampSignature) {
+      setStampSignature(settings.stampSignature);
+    }
   }, [settings]);
 
   // Security Credentials state
@@ -115,6 +121,27 @@ export const CompanySettingsView: React.FC = () => {
     reader.readAsText(file);
   };
 
+  // --- Dynamic Stamp & Signature Upload Logic ---
+  const handleStampFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Format non supporté. Veuillez sélectionner une image (PNG, JPG, WebP).', 'error');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result as string;
+        setStampSignature(dataUrl);
+        const updated = { ...formData, stampSignature: dataUrl };
+        setFormData(updated);
+        updateSettings(updated);
+        showToast('Cachet et signature mis à jour avec succès !', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // --- Dynamic Logo Upload Logic ---
   const processLogoFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -122,14 +149,13 @@ export const CompanySettingsView: React.FC = () => {
       return;
     }
 
-    // Special handling for SVG vector files
     if (file.type === 'image/svg+xml') {
       const reader = new FileReader();
       reader.onload = (ev) => {
         const svgContent = ev.target?.result as string;
         if (svgContent) {
           setFormData((prev) => ({ ...prev, logoUrl: svgContent }));
-          updateSettings({ logoUrl: svgContent });
+          updateSettings({ ...formData, logoUrl: svgContent });
           showToast('Logo vectoriel SVG importé et appliqué sur toute l\'application !', 'success');
         }
       };
@@ -137,7 +163,6 @@ export const CompanySettingsView: React.FC = () => {
       return;
     }
 
-    // Raster images (PNG, JPG, WebP): clean scaling & compression to avoid local storage overflow
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
@@ -166,7 +191,7 @@ export const CompanySettingsView: React.FC = () => {
           const mime = file.type === 'image/jpeg' ? 'image/jpeg' : 'image/png';
           const optimizedDataUrl = canvas.toDataURL(mime, 0.92);
           setFormData((prev) => ({ ...prev, logoUrl: optimizedDataUrl }));
-          updateSettings({ logoUrl: optimizedDataUrl });
+          updateSettings({ ...formData, logoUrl: optimizedDataUrl });
           showToast('Logo d\'entreprise mis à jour avec succès sur l\'application et les factures !', 'success');
         }
       };
@@ -194,7 +219,7 @@ export const CompanySettingsView: React.FC = () => {
 
   const handleResetLogo = () => {
     setFormData((prev) => ({ ...prev, logoUrl: undefined }));
-    updateSettings({ logoUrl: undefined });
+    updateSettings({ ...formData, logoUrl: undefined });
     showToast('Logo officiel HINI Make Your Mark rétabli.', 'info');
   };
 
@@ -253,9 +278,7 @@ export const CompanySettingsView: React.FC = () => {
             </div>
           </div>
 
-          {/* Double visual preview: Document Header vs Navigation */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* 1. Aperçu En-tête de Document (Factures & Proformas) */}
             <div className="p-4 rounded-xl bg-white border border-slate-200 text-slate-900 shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 flex items-center gap-1">
@@ -283,7 +306,6 @@ export const CompanySettingsView: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. Aperçu Navigation Bar & Menu */}
             <div className="p-4 rounded-xl bg-slate-950/90 border border-slate-800 text-slate-200 shadow-xs flex flex-col justify-between">
               <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-800/80">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 flex items-center gap-1">
@@ -309,7 +331,6 @@ export const CompanySettingsView: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Drag & Drop Zone */}
           <div
             onDragOver={(e) => {
               e.preventDefault();
@@ -343,13 +364,8 @@ export const CompanySettingsView: React.FC = () => {
                 ou <span className="text-blue-400 underline font-semibold">cliquez pour parcourir vos fichiers</span> (PNG avec transparence, SVG, JPG, WebP)
               </div>
             </div>
-
-            <div className="text-[10px] text-slate-400 max-w-md bg-slate-900/90 px-3 py-1.5 rounded-lg border border-slate-800">
-              Astuce : Pour un résultat optimal à l'impression des factures et proformas, privilégiez un format vectoriel SVG ou un fichier PNG sur fond transparent.
-            </div>
           </div>
 
-          {/* Action buttons */}
           <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-800/80">
             <div className="flex items-center gap-2">
               <button
@@ -471,7 +487,7 @@ export const CompanySettingsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Contacts & Signatures */}
+        {/* Contacts & Signataire */}
         <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 pb-2 border-b border-slate-800 flex items-center gap-2">
             <Phone className="w-4 h-4 text-blue-400" />
@@ -532,6 +548,38 @@ export const CompanySettingsView: React.FC = () => {
                 className="w-full px-3 py-2 bg-slate-950 border border-slate-700 text-slate-100 rounded-lg focus:ring-1 focus:ring-blue-500"
               />
             </div>
+          </div>
+        </div>
+
+        {/* --- SECTION CACHET & SIGNATURE DU PRESTATAIRE --- */}
+        <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 pb-2 border-b border-slate-800 flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            Cachet de l'Entreprise & Signature de la Gérante ("Le Prestataire")
+          </h2>
+          <p className="text-xs text-slate-400">
+            Uploadez l'image combinant le cachet officiel et la signature. Elle s'affichera automatiquement au bas de vos factures et proformas.
+          </p>
+
+          <div className="space-y-3">
+            <label className="block border-2 border-dashed border-slate-700 hover:border-emerald-500 rounded-xl p-5 text-center cursor-pointer transition-colors bg-slate-950/50">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleStampFileChange}
+                className="hidden"
+              />
+              <Upload className="w-6 h-6 text-emerald-400 mx-auto mb-1.5" />
+              <span className="text-xs font-semibold text-slate-200">Cliquez pour uploader le cachet et la signature</span>
+              <p className="text-[10px] text-slate-500 mt-0.5">PNG transparent recommandé</p>
+            </label>
+
+            {stampSignature && (
+              <div className="p-3 bg-white rounded-lg border border-slate-700 inline-block">
+                <p className="text-[10px] font-semibold text-slate-500 mb-1">Aperçu actif :</p>
+                <img src={stampSignature} alt="Cachet et Signature" className="h-20 object-contain" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -603,14 +651,10 @@ export const CompanySettingsView: React.FC = () => {
         </h2>
 
         <p className="text-xs text-slate-400 leading-relaxed">
-          Toutes vos données (clients, catalogue produits, factures et proformas) sont sauvegardées
-          automatiquement et de manière persistante dans le stockage local de votre navigateur.
-          Vous pouvez également exporter un fichier de sauvegarde JSON pour sécuriser vos données
-          ou les transférer vers un autre ordinateur.
+          Toutes vos données sont sauvegardées de manière persistante dans le stockage local.
         </p>
 
         <div className="flex flex-wrap gap-3 pt-2">
-          {/* Export JSON */}
           <button
             type="button"
             onClick={exportBackupJson}
@@ -620,7 +664,6 @@ export const CompanySettingsView: React.FC = () => {
             Exporter la Sauvegarde (JSON)
           </button>
 
-          {/* Import JSON */}
           <label className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-2 border border-slate-700 transition-colors cursor-pointer">
             <Upload className="w-4 h-4 text-blue-400" />
             Restaurer depuis un fichier JSON
@@ -633,15 +676,10 @@ export const CompanySettingsView: React.FC = () => {
             />
           </label>
 
-          {/* Reset button */}
           <button
             type="button"
             onClick={() => {
-              if (
-                window.confirm(
-                  'Attention : Vous allez réinitialiser toutes les données aux valeurs par défaut de HINI MADAGASCAR. Continuer ?'
-                )
-              ) {
+              if (window.confirm('Réinitialiser toutes les données ?')) {
                 resetAllData();
               }
             }}
@@ -653,91 +691,48 @@ export const CompanySettingsView: React.FC = () => {
         </div>
       </div>
 
-      {/* --- GESTION DES THÈMES & AFFICHAGE --- */}
+      {/* Gestion des Thèmes */}
       <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
             <Palette className="w-4 h-4 text-blue-400" />
             Gestion des Thèmes & Confort Visuel
           </h2>
-          <span className="text-[11px] text-slate-400">
-            3 modes d'affichage ergonomiques
-          </span>
         </div>
-
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Choisissez l'environnement graphique le plus adapté à vos conditions de travail :
-          le thème officiel HINI MADAGASCAR, le mode clair haute lisibilité pour le bureau, ou le mode sombre profond.
-        </p>
-
         <ThemeSwitcher variant="cards" />
       </div>
 
-      {/* --- SÉCURITÉ & CODES D'ACCÈS DES RÔLES --- */}
+      {/* Sécurité */}
       <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-800">
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-amber-400" />
             Sécurisation & Codes d'Accès des Profils
           </h2>
-          <span className="text-[11px] font-mono text-amber-300 bg-amber-950/80 px-2.5 py-0.5 rounded-full border border-amber-800/60">
-            Réservé Direction
-          </span>
         </div>
-
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Définissez les codes d'accès requis pour déverrouiller chaque profil sur l'écran de connexion.
-          Les codes sont insensibles à la casse pour plus de confort lors de la saisie sur mobile.
-        </p>
 
         <form onSubmit={handleSaveCredentials} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Commercial Passcode */}
             <div className="p-4 bg-slate-950 rounded-xl border border-blue-900/40 space-y-2">
-              <label className="block text-xs font-bold text-slate-200 flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-blue-400" />
-                  Code d'accès Commercial
-                </span>
-                <span className="text-[10px] text-blue-400 bg-blue-950 px-2 py-0.5 rounded font-mono">
-                  Ventes Terrain
-                </span>
-              </label>
+              <label className="block text-xs font-bold text-slate-200">Code d'accès Commercial</label>
               <input
                 type="text"
                 value={commercialPass}
                 onChange={(e) => setCommercialPass(e.target.value)}
-                placeholder="Ex: COMMERCIAL2026"
                 required
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 text-slate-100 rounded-lg font-mono text-xs focus:ring-1 focus:ring-blue-500 uppercase"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 text-slate-100 rounded-lg font-mono text-xs uppercase"
               />
-              <p className="text-[11px] text-slate-500">
-                Donne accès à la création des proformas, factures, catalogue et fiches clients.
-              </p>
             </div>
 
-            {/* Admin Passcode */}
             <div className="p-4 bg-slate-950 rounded-xl border border-amber-900/40 space-y-2">
-              <label className="block text-xs font-bold text-slate-200 flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-amber-400" />
-                  Code d'accès Administrateur
-                </span>
-                <span className="text-[10px] text-amber-300 bg-amber-950 px-2 py-0.5 rounded font-mono">
-                  Accès Total
-                </span>
-              </label>
+              <label className="block text-xs font-bold text-slate-200">Code d'accès Administrateur</label>
               <input
                 type="text"
                 value={adminPass}
                 onChange={(e) => setAdminPass(e.target.value)}
-                placeholder="Ex: ADMIN2026"
                 required
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 text-slate-100 rounded-lg font-mono text-xs focus:ring-1 focus:ring-amber-500 uppercase"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 text-slate-100 rounded-lg font-mono text-xs uppercase"
               />
-              <p className="text-[11px] text-slate-500">
-                Donne accès à tous les paramètres fiscaux, coordonnées bancaires et gestion des données.
-              </p>
             </div>
           </div>
 
@@ -751,344 +746,6 @@ export const CompanySettingsView: React.FC = () => {
             </button>
           </div>
         </form>
-      </div>
-
-      {/* --- PERSONNALISATION DE L'URL & BRANDING DU DÉPLOIEMENT --- */}
-      <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
-            <Globe className="w-4 h-4 text-emerald-400" />
-            URLs Personnalisées & Nom de Domaine Professionnel
-          </h2>
-          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/60">
-            HINI MADAGASCAR
-          </span>
-        </div>
-
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Pour un rendu professionnel et mémorisable auprès de vos clients et de vos équipes, voici les slugs d'URL optimisés recommandés pour le déploiement en production :
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-          {/* URL Option 1 : SaaS moderne */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-emerald-900/40 space-y-2 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-bold uppercase text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded">
-                  Recommandé SaaS
-                </span>
-                <Globe className="w-3.5 h-3.5 text-emerald-400" />
-              </div>
-              <div className="font-mono text-xs font-bold text-slate-100 break-all">
-                https://hini-facturation.app
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Court, moderne et facile à retenir pour vos commerciaux et clients.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => copyUrl('https://hini-facturation.app', 'hini-app')}
-              className="w-full mt-3 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              {copiedUrl === 'hini-app' ? (
-                <>
-                  <Check className="w-3 h-3 text-emerald-400" /> Copié !
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" /> Copier l'URL
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* URL Option 2 : Domaine officiel .mg */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-blue-900/40 space-y-2 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-bold uppercase text-blue-400 bg-blue-950 px-2 py-0.5 rounded">
-                  Officiel Madagascar
-                </span>
-                <Building className="w-3.5 h-3.5 text-blue-400" />
-              </div>
-              <div className="font-mono text-xs font-bold text-slate-100 break-all">
-                https://facturation.hinimadagascar.mg
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Sous-domaine institutionnel rattaché à l'extension officielle nationale .mg.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => copyUrl('https://facturation.hinimadagascar.mg', 'hini-mg')}
-              className="w-full mt-3 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              {copiedUrl === 'hini-mg' ? (
-                <>
-                  <Check className="w-3 h-3 text-emerald-400" /> Copié !
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" /> Copier l'URL
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* URL Option 3 : Ultra-court mobile */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-purple-900/40 space-y-2 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-bold uppercase text-purple-400 bg-purple-950 px-2 py-0.5 rounded">
-                  Format Mobile
-                </span>
-                <Smartphone className="w-3.5 h-3.5 text-purple-400" />
-              </div>
-              <div className="font-mono text-xs font-bold text-slate-100 break-all">
-                https://hini.app/facture
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Lien ultra-court optimisé pour l'envoi rapide par SMS ou WhatsApp.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => copyUrl('https://hini.app/facture', 'hini-short')}
-              className="w-full mt-3 py-1.5 px-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              {copiedUrl === 'hini-short' ? (
-                <>
-                  <Check className="w-3 h-3 text-emerald-400" /> Copié !
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3 h-3" /> Copier l'URL
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* DNS Configuration Guide Notice */}
-        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1.5">
-          <div className="font-semibold text-slate-200 flex items-center gap-1.5">
-            <Cloud className="w-4 h-4 text-sky-400" />
-            Guide de Liaison DNS vers votre nom de domaine personnalisé :
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
-            Pour lier <code className="text-emerald-400 font-mono">hini-facturation.app</code> ou <code className="text-emerald-400 font-mono">facturation.hinimadagascar.mg</code>, ajoutez simplement un enregistrement DNS de type <strong className="text-slate-200">CNAME</strong> pointant vers le domaine hébergé (ou <strong className="text-slate-200">A Record</strong> fourni par le registrar). Le certificat de sécurité SSL/HTTPS est délivré automatiquement.
-          </p>
-        </div>
-      </div>
-
-      {/* Liens d'accès par rôle */}
-      <div className="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-sm space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
-            <Share2 className="w-4 h-4 text-blue-400" />
-            Liens d'Accès Directs par Rôle
-          </h2>
-          <span className="text-[11px] font-mono text-blue-400 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-800/60">
-            Session Immédiate
-          </span>
-        </div>
-
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Partagez ces liens directs avec paramètres pré-configurés pour vos collaborateurs :
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-          {/* Commercial Link Card */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-blue-900/40 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-950 text-blue-400 rounded-md border border-blue-800/60">
-                  <Smartphone className="w-4 h-4" />
-                </div>
-                <div className="font-bold text-xs text-slate-200">
-                  1. Lien Commercial (Terrain & Vente)
-                </div>
-              </div>
-              <span className="text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800/40">
-                Mobile / Tablette
-              </span>
-            </div>
-
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Pour créer des proformas et factures rapidement chez le client, avec catalogue et clients.
-              Paramètres sensibles masqués.
-            </p>
-
-            <div className="bg-slate-900 p-2 rounded-lg border border-slate-800 font-mono text-[11px] text-blue-300 break-all select-all">
-              {commercialUrl}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => copyUrl(commercialUrl, 'commercial')}
-                className="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                {copiedUrl === 'commercial' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-300" /> Lien Copié !
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" /> Copier le lien Commercial
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setUserRole('commercial')}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold border border-slate-700 transition-colors cursor-pointer"
-              >
-                Activer
-              </button>
-            </div>
-          </div>
-
-          {/* Admin Link Card */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-amber-900/40 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-amber-950 text-amber-400 rounded-md border border-amber-800/60">
-                  <Key className="w-4 h-4" />
-                </div>
-                <div className="font-bold text-xs text-slate-200">
-                  2. Lien Admin (Direction & Gestion)
-                </div>
-              </div>
-              <span className="text-[10px] bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-800/40">
-                Accès Complet
-              </span>
-            </div>
-
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Pour la direction : configuration légale (NIF/STAT/CIS), RIB bancaire, prix unitaires
-              et sauvegardes globales.
-            </p>
-
-            <div className="bg-slate-900 p-2 rounded-lg border border-slate-800 font-mono text-[11px] text-amber-300 break-all select-all">
-              {adminUrl}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => copyUrl(adminUrl, 'admin')}
-                className="flex-1 bg-amber-600 hover:bg-amber-500 text-white px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                {copiedUrl === 'admin' ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-300" /> Lien Copié !
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" /> Copier le lien Admin
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setUserRole('admin')}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold border border-slate-700 transition-colors cursor-pointer"
-              >
-                Activer
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-import React, { useState } from 'react';
-import { CompanySettings } from '../types';
-import { Upload, CheckCircle2, ShieldCheck, X } from 'lucide-react';
-
-interface CompanySettingsModalProps {
-  settings: CompanySettings;
-  onClose: () => void;
-  onSave: (newSettings: CompanySettings) => void;
-}
-
-export const CompanySettingsModal: React.FC<CompanySettingsModalProps> = ({
-  settings,
-  onClose,
-  onSave,
-}) => {
-  const [stampSignature, setStampSignature] = useState(settings.stampSignature || '');
-  const [successMsg, setSuccessMsg] = useState(false);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setStampSignature(base64String);
-        
-        // Mise à jour globale et synchronisation instantanée
-        const updated = { ...settings, stampSignature: base64String };
-        onSave(updated);
-        localStorage.setItem('hini_company_settings', JSON.stringify(updated));
-        
-        setSuccessMsg(true);
-        setTimeout(() => setSuccessMsg(false), 3000);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-slate-100 max-w-xl w-full shadow-2xl relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="flex items-center gap-2 mb-4">
-          <ShieldCheck className="w-6 h-6 text-blue-400" />
-          <h2 className="text-lg font-bold">Paramètres Administrateur - Cachet & Signature</h2>
-        </div>
-        
-        <p className="text-sm text-slate-400 mb-6">
-          Uploadez l'image officielle combinant le cachet de l'entreprise et la signature de la gérante ("Le Prestataire"). Elle s'affichera dynamiquement sur tous les documents.
-        </p>
-
-        <div className="space-y-4">
-          <label className="block border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-slate-950/50">
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleImageUpload} 
-              className="hidden"
-            />
-            <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-            <span className="text-sm font-semibold text-slate-200">Cliquez pour uploader le cachet et la signature</span>
-            <p className="text-xs text-slate-500 mt-1">PNG, JPG ou WEBP (fond transparent recommandé)</p>
-          </label>
-
-          {successMsg && (
-            <div className="flex items-center gap-2 text-emerald-400 text-sm bg-emerald-950/40 p-3 rounded-lg border border-emerald-800/50">
-              <CheckCircle2 className="w-4 h-4" />
-              Cachet et signature mis à jour et synchronisés avec succès !
-            </div>
-          )}
-
-          {stampSignature && (
-            <div className="mt-4 p-4 bg-white rounded-lg border border-slate-700 inline-block">
-              <p className="text-xs font-semibold text-slate-500 mb-2">Aperçu officiel actif :</p>
-              <img src={stampSignature} alt="Cachet et Signature Gérante" className="h-24 object-contain" />
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
