@@ -1,0 +1,425 @@
+@import "tailwindcss";
+
+:root {
+  --brand: #3b82f6;
+  --paper: #ffffff;
+  --ink: #1e293b;
+  --bg-app: #0f172a;
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-app);
+    color: #f8fafc;
+  }
+}
+
+/* =========================================================
+   THEME 1 : CLAIR CLASSIQUE PRO (Haute lisibilité de jour & Gris Perle)
+   ========================================================= */
+html[data-theme="classic-pro"],
+html[data-theme="light"] {
+  --bg-app: #f4f6fa;
+  --bg-card: #ffffff;
+  --bg-subtle: #edf2f7;
+  --border-color: #e2e8f0;
+  --text-main: #121e42;
+  --text-muted: #475569;
+}
+
+html[data-theme="classic-pro"] body,
+html[data-theme="light"] body {
+  background-color: #f4f6fa !important;
+  color: #121e42 !important;
+}
+
+html[data-theme="classic-pro"] .bg-slate-950,
+html[data-theme="light"] .bg-slate-950 {
+  background-color: #f4f6fa !important;
+  color: #121e42 !important;
+}
+
+html[data-theme="classic-pro"] .bg-slate-900,
+html[data-theme="light"] .bg-slate-900 {
+  background-color: #ffffff !important;
+  color: #121e42 !important;
+}
+
+html[data-theme="classic-pro"] .bg-slate-800,
+html[data-theme="light"] .bg-slate-800 {
+  background-color: #edf2f7 !important;
+  color: #1e293b !important;
+}
+
+html[data-theme="classic-pro"] .border-slate-800,
+html[data-theme="classic-pro"] .border-slate-700,
+html[data-theme="classic-pro"] .border-slate-700\/50,
+html[data-theme="classic-pro"] .border-slate-700\/60,
+html[data-theme="classic-pro"] .border-slate-800\/60,
+html[data-theme="classic-pro"] .border-slate-800\/70,
+html[data-theme="classic-pro"] .border-slate-800\/80,
+html[data-theme="classic-pro"] .border-slate-800\/90,
+html[data-theme="light"] .border-slate-800,
+html[data-theme="light"] .border-slate-700 {
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme="classic-pro"] .text-slate-100,
+html[data-theme="classic-pro"] .text-slate-200,
+html[data-theme="light"] .text-slate-100,
+html[data-theme="light"] .text-slate-200 {
+  color: #121e42 !important;
+}
+
+html[data-theme="classic-pro"] .text-slate-300,
+html[data-theme="light"] .text-slate-300 {
+  color: #1e293b !important;
+}
+
+html[data-theme="classic-pro"] .text-slate-400,
+html[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+
+html[data-theme="classic-pro"] .text-slate-500,
+html[data-theme="light"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+html[data-theme="classic-pro"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="classic-pro"] select,
+html[data-theme="classic-pro"] textarea,
+html[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  background-color: #ffffff !important;
+  color: #121e42 !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="classic-pro"] input::placeholder,
+html[data-theme="classic-pro"] textarea::placeholder,
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="classic-pro"] .bg-blue-950\/40,
+html[data-theme="classic-pro"] .bg-blue-950\/60,
+html[data-theme="classic-pro"] .bg-blue-950\/70,
+html[data-theme="light"] .bg-blue-950\/40,
+html[data-theme="light"] .bg-blue-950\/60 {
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+html[data-theme="classic-pro"] .bg-amber-950\/40,
+html[data-theme="classic-pro"] .bg-amber-950\/60,
+html[data-theme="classic-pro"] .bg-amber-950\/70,
+html[data-theme="light"] .bg-amber-950\/40 {
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+
+html[data-theme="classic-pro"] ::-webkit-scrollbar-track,
+html[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html[data-theme="classic-pro"] ::-webkit-scrollbar-thumb,
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html[data-theme="classic-pro"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* =========================================================
+   THEME 2 : IVOIRE ÉLÉGANT (Warm Eye-Care & Zéro Lumière Bleue)
+   ========================================================= */
+html[data-theme="ivory-warm"] {
+  --bg-app: #f8f6f0;
+  --bg-card: #fdfcf9;
+  --bg-subtle: #f1ede2;
+  --border-color: #e6decb;
+  --text-main: #162039;
+  --text-muted: #595349;
+}
+
+html[data-theme="ivory-warm"] body {
+  background-color: #f8f6f0 !important;
+  color: #162039 !important;
+}
+
+html[data-theme="ivory-warm"] .bg-slate-950 {
+  background-color: #f8f6f0 !important;
+  color: #162039 !important;
+}
+
+html[data-theme="ivory-warm"] .bg-slate-900 {
+  background-color: #fdfcf9 !important;
+  color: #162039 !important;
+}
+
+html[data-theme="ivory-warm"] .bg-slate-800 {
+  background-color: #f1ede2 !important;
+  color: #2c354d !important;
+}
+
+html[data-theme="ivory-warm"] .border-slate-800,
+html[data-theme="ivory-warm"] .border-slate-700,
+html[data-theme="ivory-warm"] .border-slate-700\/50,
+html[data-theme="ivory-warm"] .border-slate-700\/60,
+html[data-theme="ivory-warm"] .border-slate-800\/60,
+html[data-theme="ivory-warm"] .border-slate-800\/70,
+html[data-theme="ivory-warm"] .border-slate-800\/80,
+html[data-theme="ivory-warm"] .border-slate-800\/90 {
+  border-color: #e6decb !important;
+}
+
+html[data-theme="ivory-warm"] .text-slate-100,
+html[data-theme="ivory-warm"] .text-slate-200 {
+  color: #162039 !important;
+}
+
+html[data-theme="ivory-warm"] .text-slate-300 {
+  color: #2c354d !important;
+}
+
+html[data-theme="ivory-warm"] .text-slate-400 {
+  color: #595349 !important;
+}
+
+html[data-theme="ivory-warm"] .text-slate-500 {
+  color: #786f62 !important;
+}
+
+html[data-theme="ivory-warm"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="ivory-warm"] select,
+html[data-theme="ivory-warm"] textarea {
+  background-color: #ffffff !important;
+  color: #162039 !important;
+  border-color: #dad0bc !important;
+}
+
+html[data-theme="ivory-warm"] input::placeholder,
+html[data-theme="ivory-warm"] textarea::placeholder {
+  color: #a89d89 !important;
+}
+
+html[data-theme="ivory-warm"] .bg-blue-950\/40,
+html[data-theme="ivory-warm"] .bg-blue-950\/60,
+html[data-theme="ivory-warm"] .bg-blue-950\/70 {
+  background-color: #eaf1f7 !important;
+  border-color: #cadbe9 !important;
+}
+
+html[data-theme="ivory-warm"] .bg-amber-950\/40,
+html[data-theme="ivory-warm"] .bg-amber-950\/60,
+html[data-theme="ivory-warm"] .bg-amber-950\/70 {
+  background-color: #fbf1de !important;
+  border-color: #ebd2a9 !important;
+}
+
+html[data-theme="ivory-warm"] ::-webkit-scrollbar-track {
+  background: #f1ede2;
+}
+
+html[data-theme="ivory-warm"] ::-webkit-scrollbar-thumb {
+  background: #d4cabb;
+}
+
+html[data-theme="ivory-warm"] ::-webkit-scrollbar-thumb:hover {
+  background: #baa996;
+}
+
+/* =========================================================
+   THEME 3 : BLEU NUIT DOUX (Eye-Care Crépusculaire & Anti-Éblouissement)
+   ========================================================= */
+html[data-theme="soft-navy"],
+html[data-theme="dark"],
+html[data-theme="default"] {
+  --bg-app: #101935;
+  --bg-card: #172347;
+  --bg-subtle: #1f2f5c;
+  --border-color: #26396f;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+}
+
+html[data-theme="soft-navy"] body,
+html[data-theme="dark"] body,
+html[data-theme="default"] body {
+  background-color: #101935 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="soft-navy"] .bg-slate-950,
+html[data-theme="dark"] .bg-slate-950,
+html[data-theme="default"] .bg-slate-950 {
+  background-color: #101935 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="soft-navy"] .bg-slate-900,
+html[data-theme="dark"] .bg-slate-900,
+html[data-theme="default"] .bg-slate-900 {
+  background-color: #172347 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="soft-navy"] .bg-slate-800,
+html[data-theme="dark"] .bg-slate-800,
+html[data-theme="default"] .bg-slate-800 {
+  background-color: #1f2f5c !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="soft-navy"] .border-slate-800,
+html[data-theme="soft-navy"] .border-slate-700,
+html[data-theme="soft-navy"] .border-slate-700\/50,
+html[data-theme="soft-navy"] .border-slate-700\/60,
+html[data-theme="soft-navy"] .border-slate-800\/60,
+html[data-theme="soft-navy"] .border-slate-800\/70,
+html[data-theme="soft-navy"] .border-slate-800\/80,
+html[data-theme="soft-navy"] .border-slate-800\/90,
+html[data-theme="dark"] .border-slate-800,
+html[data-theme="dark"] .border-slate-700 {
+  border-color: #26396f !important;
+}
+
+html[data-theme="soft-navy"] .text-slate-100,
+html[data-theme="soft-navy"] .text-slate-200 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="soft-navy"] .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="soft-navy"] .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="soft-navy"] .text-slate-500 {
+  color: #64748b !important;
+}
+
+html[data-theme="soft-navy"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="soft-navy"] select,
+html[data-theme="soft-navy"] textarea {
+  background-color: #131e3d !important;
+  color: #f1f5f9 !important;
+  border-color: #2b3e75 !important;
+}
+
+html[data-theme="soft-navy"] input::placeholder,
+html[data-theme="soft-navy"] textarea::placeholder {
+  color: #64748b !important;
+}
+
+html[data-theme="soft-navy"] .bg-blue-950\/40,
+html[data-theme="soft-navy"] .bg-blue-950\/60,
+html[data-theme="soft-navy"] .bg-blue-950\/70 {
+  background-color: #14244c !important;
+  border-color: #223c7c !important;
+}
+
+html[data-theme="soft-navy"] .bg-amber-950\/40,
+html[data-theme="soft-navy"] .bg-amber-950\/60,
+html[data-theme="soft-navy"] .bg-amber-950\/70 {
+  background-color: #2b2114 !important;
+  border-color: #5c4424 !important;
+}
+
+html[data-theme="soft-navy"] ::-webkit-scrollbar-track,
+html[data-theme="dark"] ::-webkit-scrollbar-track,
+html[data-theme="default"] ::-webkit-scrollbar-track {
+  background: #101935;
+}
+
+html[data-theme="soft-navy"] ::-webkit-scrollbar-thumb,
+html[data-theme="dark"] ::-webkit-scrollbar-thumb,
+html[data-theme="default"] ::-webkit-scrollbar-thumb {
+  background: #283a6b;
+}
+
+html[data-theme="soft-navy"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="default"] ::-webkit-scrollbar-thumb:hover {
+  background: #395293;
+}
+
+/* Custom sleek dark scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Print optimizations */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  #printable-official-invoice {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+}

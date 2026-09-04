@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="900" height="620">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&amp;family=Caveat:wght@700&amp;family=Playfair+Display:ital,wght@1,700&amp;display=swap');
+      .brand-title {
+        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .brand-script {
+        font-family: 'Caveat', 'Brush Script MT', 'Segoe Script', cursive, sans-serif;
+        font-style: italic;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+    </style>
+
+    <!-- Golden Quill Feather Gradient -->
+    <linearGradient id="goldFeatherGrad" x1="10%" y1="100%" x2="90%" y2="0%">
+      <stop offset="0%" stop-color="#ab753a" />
+      <stop offset="25%" stop-color="#cb965a" />
+      <stop offset="60%" stop-color="#e2b274" />
+      <stop offset="85%" stop-color="#ecc38a" />
+      <stop offset="100%" stop-color="#c99558" />
+    </linearGradient>
+
+    <!-- Feather Central Shaft Gradient -->
+    <linearGradient id="goldShaftGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#693e17" />
+      <stop offset="50%" stop-color="#8c5825" />
+      <stop offset="100%" stop-color="#bc8648" />
+    </linearGradient>
+
+    <!-- Teal Arc & Right Stem Gradient -->
+    <linearGradient id="tealBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#389d9c" />
+      <stop offset="100%" stop-color="#288180" />
+    </linearGradient>
+
+    <!-- Deep Navy Arc & Left Stem Gradient -->
+    <linearGradient id="navyBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#21316c" />
+      <stop offset="100%" stop-color="#182352" />
+    </linearGradient>
+  </defs>
+
+  <!-- ================================================================ -->
+  <!-- 1. CIRCULAR EMBLEM WITH H, QUILL & LOOPING ARROW                 -->
+  <!-- ================================================================ -->
+  <g id="hini-emblem">
+    <!-- 1a. Outer Teal Arc: sweeps around left & bottom (from ~10h to ~5h) -->
+    <path
+      d="M 175,190
+         A 190,190 0 1,0 335,550"
+      fill="none"
+      stroke="url(#tealBrandGrad)"
+      stroke-width="28"
+      stroke-linecap="round"
+    />
+
+    <!-- 1b. Outer Navy Arc: top-right segment (from ~12:30h to ~2:30h) -->
+    <path
+      d="M 345,182
+         A 190,190 0 0,1 445,280"
+      fill="none"
+      stroke="url(#navyBrandGrad)"
+      stroke-width="28"
+      stroke-linecap="round"
+    />
+
+    <!-- 1c. Curved Navy Arrow: swoops under bottom, loops and points upward -->
+    <path
+      d="M 405,510
+         C 345,585 230,575 230,502
+         C 230,470 248,446 248,432"
+      fill="none"
+      stroke="url(#navyBrandGrad)"
+      stroke-width="20"
+      stroke-linecap="round"
+    />
+    <!-- Upward Arrowhead -->
+    <polygon
+      points="248,405 218,452 278,452"
+      fill="url(#navyBrandGrad)"
+    />
+
+    <!-- 1d. Stylized 'H' Left Pillar (Deep Navy) -->
+    <path
+      d="M 160,250
+         C 190,250 214,270 214,302
+         L 214,465
+         L 142,495
+         L 186,365
+         C 168,365 150,348 160,250 Z"
+      fill="url(#navyBrandGrad)"
+    />
+
+    <!-- 1e. Stylized 'H' Crossbar (Teal) -->
+    <path
+      d="M 214,358
+         L 290,358
+         L 264,400
+         L 246,400
+         L 214,400 Z"
+      fill="url(#tealBrandGrad)"
+    />
+
+    <!-- 1f. Stylized 'H' Right Pillar (Teal) -->
+    <path
+      d="M 288,252
+         L 330,252
+         L 310,358
+         L 310,448
+         C 310,472 324,488 354,494
+         L 354,496
+         L 280,496
+         C 285,485 288,470 288,448 Z"
+      fill="url(#tealBrandGrad)"
+    />
+
+    <!-- 1g. Golden Quill Feather (Piercing diagonally from center of H up-right) -->
+    <!-- Upper / Left Feather Vane with realistic notched barbs -->
+    <path
+      d="M 252,358
+         C 262,300 298,215 372,125
+         C 363,145 355,165 357,187
+         C 372,169 390,156 403,147
+         C 394,169 382,194 370,221
+         C 387,205 408,192 423,183
+         C 408,221 380,261 338,299
+         C 305,332 270,353 252,358 Z"
+      fill="url(#goldFeatherGrad)"
+    />
+
+    <!-- Lower / Right Feather Vane with notches -->
+    <path
+      d="M 252,358
+         C 287,345 334,316 380,276
+         C 368,296 350,314 327,334
+         C 349,322 371,308 385,298
+         C 368,330 336,356 292,376
+         C 270,369 259,362 252,358 Z"
+      fill="url(#goldFeatherGrad)"
+    />
+
+    <!-- Central Quill Spine / Shaft -->
+    <path
+      d="M 244,368
+         Q 322,260 401,78"
+      fill="none"
+      stroke="url(#goldShaftGrad)"
+      stroke-width="5.5"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- 2. BRAND TYPOGRAPHY: "HINI" (NAVY) & "Make Your Mark." (GOLD)    -->
+  <!-- ================================================================ -->
+  <g id="hini-text">
+    <!-- "HINI" in Navy Blue Bold Caps (Geometric sans-serif) -->
+    <text
+      x="435"
+      y="390"
+      fill="#1b2a65"
+      class="brand-title"
+      font-size="145"
+      font-weight="900"
+    >HINI</text>
+
+    <!-- "Make Your Mark." in Warm Golden Script Calligraphy -->
+    <text
+      x="410"
+      y="468"
+      fill="#c99558"
+      class="brand-script"
+      font-size="78"
+      font-weight="700"
+      font-style="italic"
+    >Make Your Mark.</text>
+  </g>
+</svg>

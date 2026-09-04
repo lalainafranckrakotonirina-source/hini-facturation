@@ -1,0 +1,8 @@
+{
+  "name": "HINI MADAGASCAR Facturation",
+  "description": "Application de gestion commerciale et facturation officielle pour HINI MADAGASCAR (Événementiel & Tous supports publicitaires).",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
