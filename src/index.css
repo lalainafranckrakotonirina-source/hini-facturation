@@ -423,3 +423,36 @@ html[data-theme="default"] ::-webkit-scrollbar-thumb:hover {
     display: table-footer-group;
   }
 }
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Masquer les éléments non désirés lors de l'impression */
+  nav, aside, .no-print, button, .actions-bar {
+    display: none !important;
+  }
+
+  /* Forcer le conteneur sur une seule page A4 */
+  .invoice-container {
+    width: 210mm;
+    height: 297mm;
+    max-height: 297mm;
+    margin: 0 auto;
+    padding: 10mm;
+    box-sizing: border-box;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  table {
+    font-size: 11px !important;
+  }
+  th, td {
+    padding: 4px 6px !important;
+  }
+}
